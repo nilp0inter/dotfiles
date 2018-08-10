@@ -80,7 +80,7 @@ set cm=blowfish2
 set number
 set relativenumber
 
-" use Ctrl+R to toggle the line number counting method
+" use Ctrl+C to toggle the line number counting method
 function! g:ToggleNuMode()
   if &relativenumber == 1
      set norelativenumber
@@ -137,7 +137,6 @@ call plug#begin()
     Plug 'jsfaint/gen_tags.vim'
     Plug 'takac/vim-hardtime'
     Plug 'wincent/command-t'
-    Plug 'Shougo/denite.nvim'
 
     " TDD
     Plug 'janko-m/vim-test'
@@ -148,6 +147,7 @@ call plug#begin()
     " Syntax
     Plug 'luochen1990/rainbow'
     Plug 'vim-syntastic/syntastic'
+    Plug 'tell-k/vim-autopep8'
 
     " Text objects
     Plug 'kana/vim-textobj-entire'
@@ -205,6 +205,10 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
-let g:syntastic_enable_signs = 1
-let g:syntastic_enable_highlighting = 0
+let g:syntastic_enable_signs = 0
+let g:syntastic_enable_highlighting = 1
 let g:syntastic_mode_map = {"mode": "passive"}
+let g:syntastic_python_checkers = ['pycodestyle']
+
+" autopep8 as equalprg
+autocmd FileType python set equalprg=autopep8\ -
