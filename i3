@@ -121,7 +121,7 @@ bindsym $mod+Shift+0 move container to workspace $ws10
 bindsym XF86MonBrightnessUp exec xbacklight -inc 10
 bindsym XF86MonBrightnessDown exec xbacklight -dec 10
 bindsym XF86Search exec opera
-bindsym $mod+g exec setxkbmap us 
+bindsym $mod+g exec setxkbmap -rules evdev -model evdev -layout us -variant altgr-intl
 bindsym $mod+p exec setxkbmap es 
 
 
