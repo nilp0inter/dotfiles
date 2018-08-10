@@ -120,11 +120,18 @@ endif
 
 " autochdir
 "set autochdir
-autocmd BufEnter * silent! lcd %:p:h
+"autocmd BufEnter * silent! lcd %:p:h
 
 
 " save with Ctrl-S
 nnoremap <C-S> :w<cr>
+
+" use AG instead of grep if present
+if executable('ag')
+    let g:ackprg = 'ag --vimgrep'
+endif
+
+
 "
 " PLUGINS
 "
@@ -137,6 +144,7 @@ call plug#begin()
     Plug 'jsfaint/gen_tags.vim'
     Plug 'takac/vim-hardtime'
     Plug 'wincent/command-t'
+    Plug 'dkprice/vim-easygrep'
 
     " TDD
     Plug 'janko-m/vim-test'
@@ -148,6 +156,7 @@ call plug#begin()
     Plug 'luochen1990/rainbow'
     Plug 'vim-syntastic/syntastic'
     Plug 'tell-k/vim-autopep8'
+    Plug 'davidhalter/jedi-vim'
 
     " Text objects
     Plug 'kana/vim-textobj-entire'
@@ -212,3 +221,14 @@ let g:syntastic_python_checkers = ['pycodestyle']
 
 " autopep8 as equalprg
 autocmd FileType python set equalprg=autopep8\ -
+
+" " EasyGrep
+let g:EasyGrepJumpToMatch = 0
+let g:EasyGrepWindow = 0
+
+" jedi
+let g:jedi#popup_on_dot = 0
+let g:jedi#show_call_signatures = 1
+let g:jedi#show_call_signatures_delay = 0
+let g:jedi#use_tag_stack = 1
+autocmd FileType python setlocal completeopt-=preview
