@@ -1,115 +1,90 @@
-" disable mouse
+" BEHAVIOR {{{1
 set mouse=
-
-" enable syntax highlighting
-syntax enable
-
-set background=dark
-
-" set tabs to have 4 spaces
-set ts=4
-
-" indent when moving to the next line while writing code
-set autoindent
-
-" expand tabs into spaces
-set expandtab
-
-" when using the >> or << commands, shift lines by 4 spaces
-set shiftwidth=4
-
-" show the matching part of the pair for [] {} and ()
-set showmatch
-
-" smarttab.
-set smarttab
-
-" switchbuf = usetab
+set nocompatible
+set hidden
 set switchbuf=usetab
+set virtualedit=block
+set scrolloff=2
 
-" enable all Python syntax highlighting features
-let python_highlight_all = 1
 
-" completion
+" DISPLAY {{{1
+syntax on
+set background=dark
+set list
+set number
+set relativenumber
+set cursorcolumn
+set cursorline
+function! g:ToggleNuMode()
+  if &relativenumber == 1
+     set norelativenumber
+     set nocursorcolumn
+     set nocursorline
+     call HardTimeOff()
+  else
+     set relativenumber
+     set cursorcolumn
+     set cursorline
+     call HardTimeOn()
+  endif
+endfunction
+
+
+" STATUS LINE {{{1
+set ruler
+set showcmd
+set wildmenu
+set wildmode=full
+
+
+" AUTOCOMPLETION {{{1
+set autoindent
+set expandtab
+set shiftwidth=4
+set tabstop=4
+set smarttab
+set complete+=t
 if has("autocmd") && exists("+omnifunc")
   autocmd Filetype *
           \ if &omnifunc == "" |
           \     setlocal omnifunc=syntaxcomplete#Complete |
           \ endif
 endif
-
-set complete+=t
-
-" print options
-set printoptions=number:y,wrap:n,syntax:y,left:3pc
-
-" search
-set hls is
-nnoremap <esc><esc> :nohl<cr>
-
-" columnwidth
-set textwidth=79
-set colorcolumn=+1
-
-" status line
-set ruler
-
-" set nocompatible
-set nocp
-
-" wrap
-set wrap
-
-" showcmd
-set showcmd
-
-" edit config in new tab via gC
-map gC :tabedit ~/.vimrc<cr>
-vmap gS :!sort<cr>
-" invisible characters
-set list
-
-" undo persistence
-set undodir=~/.vim/undo-dir
-set undofile
-
-" encryption
-set cm=blowfish2
-
-" numbering
-set number
-set relativenumber
-
-" use Ctrl+C to toggle the line number counting method
-function! g:ToggleNuMode()
-  if &relativenumber == 1
-     set norelativenumber
-  else
-     set relativenumber
-  endif
-endfunction
-nnoremap <silent><C-C> :call g:ToggleNuMode()<cr>
-
-" change <leader> to , for command-t
-let mapleader = ","
-let g:mapleader = ","
-
-" spell/dictionary/thesaurus
 set thesaurus+=/home/nil/.vim/thesaurus/words.txt
 set dictionary+=/usr/share/dict/american-english
 set dictionary+=/usr/share/dict/spanish
 
-" shortcuts
+
+" PRINTING {{{1
+set printoptions=number:y,wrap:n,syntax:y,left:3pc
+
+
+" SEARCH  {{{1
+set hlsearch
+set incsearch
+nnoremap <esc><esc> :nohlsearch<cr>
+set showmatch
+if executable('ag')
+    let g:ackprg = 'ag --vimgrep'
+endif
+
+
+" FOLDING {{{1
+set foldmethod=marker
+
+
+" MAX TEXT WIDTH {{{1
+set textwidth=79
+set colorcolumn=+1
+set wrap
+
+
+" KEYBOARD SHORTCUTS {{{1
+map gC :tabedit ~/.vimrc<cr>
+vmap gS :!sort<cr>
 nnoremap <C-J> m`o<Esc>``
 nnoremap <C-K> m`O<Esc>``
-
-" wildmenu
-set wildmenu
-set wildmode=full
-
-" reload vimrc on save
 autocmd! bufwritepost .vimrc call ReloadAndUpdatePlugins()
-
 if !exists('*ReloadAndUpdatePlugins')
     function ReloadAndUpdatePlugins()
         source %
@@ -117,48 +92,52 @@ if !exists('*ReloadAndUpdatePlugins')
         PlugUpdate
     endfunction
 endif
-
-" autochdir
-"set autochdir
-"autocmd BufEnter * silent! lcd %:p:h
-
-
-" save with Ctrl-S
 nnoremap <C-S> :w<cr>
+nnoremap <Space> @:
+nnoremap <silent><C-C> :call g:ToggleNuMode()<cr>
+let mapleader = ","
+let g:mapleader = ","
 
-" use AG instead of grep if present
-if executable('ag')
-    let g:ackprg = 'ag --vimgrep'
-endif
+
+" UNDO {{{1
+set undodir=~/.vim/undo-dir
+set undofile
 
 
-"
-" PLUGINS
-"
+" ENCRYPTION {{{1
+set cm=blowfish2
 
-" vim-plug configuration
+
+" NETRW {{{1
+let g:netrw_liststyle = 2
+let g:netrw_banner = 1
+
+
+" PLUGINS {{{1
 call plug#begin()
-    " Util
-    Plug 'SirVer/ultisnips'
-    Plug 'easymotion/vim-easymotion'
-    Plug 'jsfaint/gen_tags.vim'
+    " MOTION {{{2
     Plug 'takac/vim-hardtime'
+    Plug 'easymotion/vim-easymotion'
+
+    " SEARCH {{{2
     Plug 'wincent/command-t'
+    Plug 'tpope/vim-abolish'
     Plug 'dkprice/vim-easygrep'
 
-    " TDD
+    " PROGRAMMING {{{2
+    Plug 'tpope/vim-fugitive'
     Plug 'janko-m/vim-test'
     Plug 'tpope/vim-dispatch'
     Plug '5long/pytest-vim-compiler'
+    Plug 'jsfaint/gen_tags.vim'
 
-
-    " Syntax
+    " SYNTAX {{{2
     Plug 'luochen1990/rainbow'
     Plug 'vim-syntastic/syntastic'
     Plug 'tell-k/vim-autopep8'
     Plug 'davidhalter/jedi-vim'
 
-    " Text objects
+    " TEXT OBJECTS {{{2
     Plug 'kana/vim-textobj-entire'
     Plug 'kana/vim-textobj-user'
     Plug 'michaeljsmith/vim-indent-object'
@@ -166,50 +145,52 @@ call plug#begin()
     Plug 'tpope/vim-surround'
     Plug 'tweekmonster/braceless.vim'
 
-    " Snippets
+    " SNIPPETS {{{2
     Plug 'nilp0inter/vim-snippets'
+    Plug 'SirVer/ultisnips'
 call plug#end()
 
-" vim-test configuration
+
+" PLUGINS CONFIGURATION {{{1 
+" VIM-TEST CONFIGURATION {{{2
 let test#python#runner = 'pytest'
 let test#python#pytest#executable = 'pipenv run pytest'
 let test#python#pytest#options = '--color=no --tb=short -q'
 let test#strategy = 'make'
 let test#preserve_screen = 0
-
 nmap tn :TestNearest<CR>
 nmap tf :TestFile<CR>
 nmap ts :TestSuite<CR>
 nmap tl :TestLast<CR>
 nmap tg :TestVisit<CR>
 
-" braceless.vim
+" BRACELESS {{{2
 autocmd FileType python BracelessEnable +indent +highlight
 let g:braceless_line_continuation = 0
 
-" rainbow
+" RAINBOW {{{2
 let g:rainbow_active = 1
 
-" hardtime
+" HARDTIME {{{2
 let g:hardtime_maxcount = 5
 let g:hardtime_showmsg = 1
+let g:hardtime_showerr = 0
 let g:hardtime_timeout = 2000
 let g:hardtime_default_on = 1
+let g:hardtime_ignore_quickfix = 1
 
-" gen_tags
+" GEN_TAGS {{{2
 let g:gen_tags#gtags_default_map = 1
 
-" Trigger configuration.
+" ULTISNIPS {{{2
 let g:UltiSnipsListSnippets="<leader><tab>"
 let g:UltiSnipsJumpForwardTrigger="<C-j>"
 let g:UltiSnipsJumpBackwardTrigger="<C-k>"
-
-" If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
 let g:UltiSnipsSnippetsDir="/home/nil/.vim/plugged/vim-snippets/UltiSnips"
 let g:UltiSnipsEnableSnipMate=0
 
-" syntastic
+" SYNTASTIC {{{2
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 0
@@ -219,14 +200,15 @@ let g:syntastic_enable_highlighting = 1
 let g:syntastic_mode_map = {"mode": "passive"}
 let g:syntastic_python_checkers = ['pycodestyle']
 
-" autopep8 as equalprg
+" AUTOPEP8 {{{2
 autocmd FileType python set equalprg=autopep8\ -
 
-" " EasyGrep
+" EASYGREP {{{2
 let g:EasyGrepJumpToMatch = 0
 let g:EasyGrepWindow = 0
 
-" jedi
+" JEDI {{{2
+let python_highlight_all = 1
 let g:jedi#popup_on_dot = 0
 let g:jedi#show_call_signatures = 1
 let g:jedi#show_call_signatures_delay = 0
